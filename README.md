@@ -1,23 +1,24 @@
-Initialization:
+> ### Initialization:
 
 ```bash
 npm/yarn init -y
 ```
 
-Dependencies:
+> ### Dependencies:
 
 ```bash
 yarn add express dotenv
 yarn add nodemon --dev
 ```
 
-configure package.json:
+> ### Configure package.json:
 
 ```json
 {
    "type": "module",
    "scripts": {
-      "dev": "nodemon server.js"
+      "start": "node src/server.js",
+      "dev": "nodemon src/server.js"
    }
 }
 ```
@@ -26,3 +27,14 @@ configure package.json:
 import dotenv from 'dotenv';
 dotenv.config();
 ```
+
+> ### Mongodb Installations using `winget`:
+
+```cmd
+winget install MongoDB.Server
+winget install MongoDB.Compass.Full
+winget install Postman.Postman
+
+```
+
+`path: C:\Program Files\MongoDB\Server\4.4\bin`
