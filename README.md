@@ -7,7 +7,7 @@ npm/yarn init -y
 > ### Dependencies:
 
 ```bash
-yarn add express dotenv
+yarn add express dotenv mongoose
 yarn add nodemon --dev
 ```
 
