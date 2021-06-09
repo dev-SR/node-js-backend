@@ -1,11 +1,19 @@
 import express from 'express';
-import dotenv from 'dotenv';
-dotenv.config();
-
 const app = express();
+import { port, environment } from './config.js';
+import log from './core/logger.js';
+import { connectDB } from './db/db.js';
+app.use(express.json());
 
-app.get('/', (r, res) => {
-   res.send('Hello World');
+//import routes
+import userRouter from './routes/user.route.js';
+app.use('/api/v1', userRouter);
+
+//Connecting to database
+connectDB();
+
+app.listen(port, () => {
+   log.info(
+      `Server listening at http://localhost:${port} in ${environment} mode`
+   );
 });
-
-export default app;
