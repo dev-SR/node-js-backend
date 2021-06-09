@@ -11,7 +11,7 @@ npm/yarn init -y
 ---
 
 ```bash
-yarn add express dotenv mongoose
+yarn add express dotenv mongoose pino pino-pretty dayjs
 yarn add nodemon --dev
 ```
 
