@@ -8,6 +8,11 @@ const UserSchema = new mongoose.Schema({
       minlength: [2, 'Minimum 2 character is required'],
       maxlength: 20,
       trim: true
+   },
+   email: {
+      type: String,
+      required: [true, 'Please enter email'],
+      trim: true
    }
 });
 const PostSchema = new mongoose.Schema({
