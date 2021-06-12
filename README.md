@@ -70,7 +70,9 @@ winget install MongoDB.Compass.Full
 [UnOfficial Doc](https://fakerjsdocs.netlify.app/)\
 [Demo](https://rawgit.com/Marak/faker.js/master/examples/browser/index.html)
 
-Generating data:
+> Note: `random` deprecated, instead use `datatype`
+
+**Generating data:**
 
 ```
 yarn faker [file_name]! [no. of items]!
