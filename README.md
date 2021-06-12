@@ -70,7 +70,7 @@ winget install MongoDB.Compass.Full
 [UnOfficial Doc](https://fakerjsdocs.netlify.app/)\
 [Demo](https://rawgit.com/Marak/faker.js/master/examples/browser/index.html)
 
-> Note: `random` deprecated, instead use `datatype`
+> Note: `random.number()` deprecated, instead use `datatype.number()`
 
 **Generating data:**
 
