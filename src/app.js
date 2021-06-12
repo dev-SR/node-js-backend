@@ -7,7 +7,8 @@ app.use(express.json());
 
 //import routes
 import userRouter from './routes/user.route.js';
-app.use('/api/v1', userRouter);
+import proRouter from './routes/product.route.js';
+app.use('/api/v1', proRouter);
 
 //Connecting to database
 connectDB();

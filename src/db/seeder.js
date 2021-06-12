@@ -1,5 +1,3 @@
-//! 1. load Models
-import { User } from './models/user.model.js';
 import mongoose from 'mongoose';
 import log from '../core/logger.js';
 
@@ -27,7 +25,7 @@ mongoose
       process.exit(1);
    });
 
-//! 2. Read JSON files
+//! 1. Read JSON files
 /**
  * * OPTION 1: READING AS FILE 
 // import fs from 'fs';
@@ -43,7 +41,8 @@ mongoose
  */
 import users from './seeds/user.json';
 // console.log(users);
-
+//! 2. load Models
+import { User } from './models/user.model.js';
 //! 3. Import Data
 const importData = async () => {
    try {

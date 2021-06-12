@@ -1,3 +1,14 @@
+# Overview
+
+-  initialization
+-  dependencies
+-  package.json
+-  postman
+-  db
+   -  mongodb
+   -  faker.js
+   -  [seeding](#seed)
+
 ## Initialization:
 
 ```bash
@@ -11,6 +22,11 @@ yarn add express dotenv mongoose pino pino-pretty dayjs
 yarn add nodemon --dev
 ```
 
+```ts
+import dotenv from 'dotenv';
+dotenv.config();
+```
+
 ## Configure package.json:
 
 ```json
@@ -18,14 +34,11 @@ yarn add nodemon --dev
    "type": "module",
    "scripts": {
       "start": "node src/server.js",
-      "dev": "nodemon src/server.js"
+      "dev": "nodemon src/server.js",
+      "seed": "cd src/db && node --experimental-json-modules seeder",
+      "faker": "cd src/db && node faker"
    }
 }
-```
-
-```ts
-import dotenv from 'dotenv';
-dotenv.config();
 ```
 
 ## Postman configuration:
@@ -51,16 +64,38 @@ winget install MongoDB.Compass.Full
 
 `Add path to env: C:\Program Files\MongoDB\Server\4.4\bin`
 
-### Seeding Data:
+## Faker.js
+
+[Github](https://github.com/marak/Faker.js/)\
+[UnOfficial Doc](https://fakerjsdocs.netlify.app/)\
+[Demo](https://rawgit.com/Marak/faker.js/master/examples/browser/index.html)
+
+Generating data:
+
+```
+yarn faker [file_name]! [no. of items]!
+```
+
+EX:
+
+```
+yarn faker
+yarn faker user.json
+yarn faker product.json 100
+```
+
+<div id="seed"/>
+
+## Seeding Data:
 
 Importing data:
 
 ```
-yarn run seed -i
+yarn seed -i
 ```
 
 Deleting data:
 
 ```
-yarn run seed -d
+yarn seed -d
 ```

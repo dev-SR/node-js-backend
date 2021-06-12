@@ -6,7 +6,8 @@ export const connectDB = () => {
       .connect(db_uri, {
          useNewUrlParser: true,
          useUnifiedTopology: true,
-         useCreateIndex: true
+         useCreateIndex: true,
+         useFindAndModify: false
       })
       .then((con) => {
          log.info(`DB connected with HOST: ${con.connection.host}`);
