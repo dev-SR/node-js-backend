@@ -37,9 +37,16 @@ function GenerateData(fileName = 'data.json', N = 10) {
    };
    for (i = 0; i < N; i++) {
       data.push({
-         name: faker.name.findName(),
-         email: faker.internet.email(),
-         blogs: _.arrayOfUUID()
+         title: faker.lorem.sentence(1),
+         user: _.randomUUIDFromGiven([
+            '60c8e5977008b5518069f811',
+            '60c8e5977008b5518069f812',
+            '60c8e5977008b5518069f813',
+            '60c8e5977008b5518069f814',
+            '60c8e5977008b5518069f815'
+         ]),
+         body: faker.lorem.sentences(2),
+         comments: _.arrayOfUUID()
       });
    }
 
