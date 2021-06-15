@@ -38,19 +38,16 @@ function GenerateData(fileName = 'data.json', N = 10) {
    for (i = 0; i < N; i++) {
       data.push({
          _id: _.randomUUIDFromGiven([
-            '60c8e2d66b7127536084dea8',
-            '60c8e2d66b7127536084dea9'
+            '60c900908bcf6b07446a4541',
+            '60c900908bcf6b07446a4543',
+            '60c900908bcf6b07446a4544'
          ]),
-         title: faker.lorem.sentence(1),
-         user: _.randomUUIDFromGiven([
-            '60c8e5977008b5518069f811',
-            '60c8e5977008b5518069f812',
-            '60c8e5977008b5518069f813',
-            '60c8e5977008b5518069f814',
-            '60c8e5977008b5518069f815'
+         user: '60c8e5977008b5518069f814',
+         blog: _.randomUUIDFromGiven([
+            '60c8e2d66b7127536084dea9',
+            '60c8e2d66b7127536084dea8'
          ]),
-         body: faker.lorem.sentences(2),
-         comments: _.arrayOfUUID()
+         body: faker.lorem.sentences(2)
       });
    }
 
