@@ -39,11 +39,11 @@ mongoose
  * ?Node.js ES Modules docs that currently importing JSON is only supported in the CommonJS mode
  * ?and the flag `--experimental-json-modules` is required for importing JSON files in ES modules.
  */
+import x from './seeds/blog.json';
 // console.log(users);
 //! 2. load Models
-import Model from './models/user.model.js';
+import Model from './models/blog.model.js';
 //! 3. Import Data
-import x from './seeds/user.json';
 
 const importData = async () => {
    try {

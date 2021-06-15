@@ -1,57 +1,45 @@
 import log from '../core/logger.js';
 import fs from 'fs';
 import faker from 'faker';
+import ObjectID from 'bson-objectid';
+
 import path from 'path';
 const rootDir = path.resolve(path.dirname(''));
 const __dirname = path.join(rootDir, 'seeds');
+
+// Generate Object id
+// let GeneratedObjectIDs = [];
+// for (let i = 0; i < 5; i++) {
+//    let id = ObjectID();
+//    ObjectIDs.push(id);
+// }
 
 function GenerateData(fileName = 'data.json', N = 10) {
    let data = [];
    let i;
    //Customs Helpers
    let _ = {
-      arrayOfCat: function () {
-         //Generate Array of categories
+      randomUUIDFromGiven: function (arr) {
+         let uid = faker.random.arrayElement(arr);
+         return uid;
+      },
+      arrayOfUUID: function () {
          let ar = [];
-         let N = Math.floor(Math.random() * 5) + 1;
+         let N = Math.floor(Math.random() * 4) + 1;
          for (let i = 0; i < N; i++) {
-            let cat = faker.commerce.department();
-            ar.push(cat);
+            // let uid = this.randomUUIDFromGiven();
+            // let uid = this.randomUUIDFromGenerated();
+            let uid = ObjectID();
+            ar.push(uid);
          }
          return ar;
-      },
-      arrayOfPhotos: function () {
-         let ar = [];
-         // 0 or 1
-         let ZeroOrOne = Math.floor(Math.random() * 2) + 0;
-         // if 1 generate multiple image
-         if (ZeroOrOne === 1) {
-            let N = Math.floor(Math.random() * 5) + 1;
-            for (let i = 0; i < N; i++) {
-               let img = faker.image.image();
-               ar.push(img);
-            }
-            return ar;
-         } else {
-            //if 0  use default image
-            ar.push('no-photos.png');
-            return ar;
-         }
       }
    };
    for (i = 0; i < N; i++) {
       data.push({
-         name: faker.commerce.productName(),
-         price: faker.commerce.price(),
-         onSale: faker.datatype.boolean(),
-         categories: _.arrayOfCat(),
-         qty: {
-            online: faker.datatype.number(50),
-            inStore: faker.datatype.number(50)
-         },
-         others: {
-            photos: _.arrayOfPhotos()
-         }
+         name: faker.name.findName(),
+         email: faker.internet.email(),
+         blogs: _.arrayOfUUID()
       });
    }
 

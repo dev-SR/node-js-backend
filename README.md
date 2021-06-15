@@ -6,7 +6,7 @@
 -  postman
 -  db
    -  mongodb
-   -  faker.js
+   -  [faker.js](#faker)
    -  [seeding](#seed)
 
 ## Initialization:
@@ -64,6 +64,24 @@ winget install MongoDB.Compass.Full
 
 `Add path to env: C:\Program Files\MongoDB\Server\4.4\bin`
 
+<div id="seed"/>
+
+## Seeding Data:
+
+Importing data:
+
+```
+yarn seed -i
+```
+
+Deleting data:
+
+```
+yarn seed -d
+```
+
+<div id="faker" ></div>
+
 ## Faker.js
 
 [Github](https://github.com/marak/Faker.js/)\
@@ -86,18 +104,78 @@ yarn faker user.json
 yarn faker product.json 100
 ```
 
-<div id="seed"/>
+> random Id From Given Ids:
 
-## Seeding Data:
-
-Importing data:
-
+```js
+import faker from 'faker';
+let arr = [
+   '60c8e5977008b5518069f811',
+   '60c8e5977008b5518069f812',
+   '60c8e5977008b5518069f813',
+   '60c8e5977008b5518069f814',
+   '60c8e5977008b5518069f815'
+];
+let _ = {
+   randomUUIDFromGiven: function (arr) {
+      let uid = faker.random.arrayElement(arr);
+      return uid;
+   }
+};
+_.randomUUIDFromGiven(arr);
 ```
-yarn seed -i
+
+> generate Array of Object Id:
+
+```js
+//Generate Object id
+let GeneratedObjectIDs = [];
+for (let i = 0; i < N; i++) {
+   let id = ObjectID();
+   ObjectIDs.push(id);
+}
 ```
 
-Deleting data:
+> random arrayOfObjectId:
 
+```js
+import ObjectID from 'bson-objectid';
+let _ = {
+   arrayOfUUID: function () {
+      let ar = [];
+      let N = Math.floor(Math.random() * 4) + 1;
+      for (let i = 0; i < N; i++) {
+         // let uid = this.randomUUIDFromGiven();
+         // let uid = this.randomUUIDFromGenerated();
+         let uid = ObjectID();
+         ar.push(uid);
+      }
+      return ar;
+   }
+};
 ```
-yarn seed -d
+
+> arrayOfPhotos:
+
+```js
+import faker from 'faker';
+let _ = {
+   arrayOfPhotos: function () {
+      let ar = [];
+      // 0 or 1
+      let ZeroOrOne = Math.floor(Math.random() * 2) + 0;
+      // if 1 generate multiple image
+      if (ZeroOrOne === 1) {
+         let N = Math.floor(Math.random() * 5) + 1;
+         for (let i = 0; i < N; i++) {
+            let img = faker.image.image();
+            ar.push(img);
+         }
+         return ar;
+      } else {
+         //if 0  use default image
+         ar.push('no-photos.png');
+         return ar;
+      }
+   }
+};
 ```

@@ -23,6 +23,7 @@
       "pino-pretty": "^5.0.2"
    },
    "devDependencies": {
+      "bson-objectid": "^2.0.1",
       "nodemon": "^2.0.7"
    }
 }
