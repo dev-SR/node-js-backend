@@ -4,14 +4,12 @@ const UserSchema = new mongoose.Schema({
    name: String,
    email: String,
    blogs: [
-      // [...'uid']
       {
          type: mongoose.Schema.Types.ObjectId,
          ref: 'Blog'
       }
    ]
 });
-
-const User = mongoose.model('Users', UserSchema);
+const User = mongoose.model('User', UserSchema);
 
 export default User;

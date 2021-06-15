@@ -10,7 +10,6 @@ const CommentSchema = new mongoose.Schema({
    },
    body: String
 });
-
 const Comment = mongoose.model('Comment', CommentSchema);
 
 export default Comment;
