@@ -37,7 +37,6 @@ function GenerateData(fileName = 'data.json', N = 10) {
    };
    for (i = 0; i < N; i++) {
       data.push({
-         title: faker.lorem.sentence(1),
          user: _.randomUUIDFromGiven([
             '60c8e5977008b5518069f811',
             '60c8e5977008b5518069f812',
@@ -45,8 +44,19 @@ function GenerateData(fileName = 'data.json', N = 10) {
             '60c8e5977008b5518069f814',
             '60c8e5977008b5518069f815'
          ]),
-         body: faker.lorem.sentences(2),
-         comments: _.arrayOfUUID()
+         blog: _.randomUUIDFromGiven([
+            '60c8f614e8b4a334bc378b27',
+            '60c8f614e8b4a334bc378b28',
+            '60c8f614e8b4a334bc378b26',
+            '60c8f614e8b4a334bc378b29',
+            '60c8f614e8b4a334bc378b2a',
+            '60c8f614e8b4a334bc378b2b',
+            '60c8f614e8b4a334bc378b2c',
+            '60c8f614e8b4a334bc378b2d',
+            '60c8f614e8b4a334bc378b2e',
+            '60c8f614e8b4a334bc378b2f'
+         ]),
+         body: faker.lorem.sentences(2)
       });
    }
 
