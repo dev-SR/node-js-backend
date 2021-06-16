@@ -13,15 +13,28 @@ const __dirname = path.join(rootDir, 'seeds');
 //    let id = ObjectID();
 //    ObjectIDs.push(id);
 // }
+let counter1 = 0;
+let counter2 = 0;
 
 function GenerateData(fileName = 'data.json', N = 10) {
    let data = [];
    let i;
    //Customs Helpers
    let _ = {
+      unique_id: 0,
       randomUUIDFromGiven: function (arr) {
          let uid = faker.random.arrayElement(arr);
          return uid;
+      },
+      random_unique_UUIDFromGiven: function (arr, count) {
+         if (this.unique_id === arr.length) {
+            log.error(
+               `Array Out of Bound; Max Allowed ${this.unique_id} items`
+            );
+            process.exit();
+         }
+         let uuid = arr[this.unique_id++];
+         return uuid;
       },
       arrayOfUUID: function () {
          let ar = [];
@@ -36,18 +49,33 @@ function GenerateData(fileName = 'data.json', N = 10) {
       }
    };
    for (i = 0; i < N; i++) {
+      let idx = 0;
       data.push({
-         _id: _.randomUUIDFromGiven([
-            '60c900908bcf6b07446a4541',
-            '60c900908bcf6b07446a4543',
-            '60c900908bcf6b07446a4544'
+         _id: _.random_unique_UUIDFromGiven([
+            '60c8e2d66b7127536084de9d',
+            '60c8e2d66b7127536084de9e',
+            '60c8e2d66b7127536084de9f',
+            '60c8e2d66b7127536084dea0',
+            '60c8e2d66b7127536084dea1',
+            '60c8e2d66b7127536084dea2',
+            '60c8e2d66b7127536084dea3',
+            '60c8e2d66b7127536084dea4',
+            '60c8e2d66b7127536084dea5',
+            '60c8e2d66b7127536084dea6',
+            '60c8e2d66b7127536084dea7',
+            '60c8e2d66b7127536084dea8',
+            '60c8e2d66b7127536084dea9'
          ]),
-         user: '60c8e5977008b5518069f814',
-         blog: _.randomUUIDFromGiven([
-            '60c8e2d66b7127536084dea9',
-            '60c8e2d66b7127536084dea8'
+         title: faker.lorem.sentences(1),
+         user: _.randomUUIDFromGiven([
+            '60c8e5977008b5518069f811',
+            '60c8e5977008b5518069f812',
+            '60c8e5977008b5518069f813',
+            '60c8e5977008b5518069f814',
+            '60c8e5977008b5518069f815'
          ]),
-         body: faker.lorem.sentences(2)
+         body: faker.lorem.sentences(2),
+         comments: _.arrayOfUUID()
       });
    }
 
