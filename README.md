@@ -124,6 +124,31 @@ let _ = {
 _.randomUUIDFromGiven(arr);
 ```
 
+> random But Unique Id From Given Ids:
+
+```js
+import faker from 'faker';
+let arr = [
+   '60c8e5977008b5518069f811',
+   '60c8e5977008b5518069f812',
+   '60c8e5977008b5518069f813',
+   '60c8e5977008b5518069f814',
+   '60c8e5977008b5518069f815'
+];
+let _ = {
+   unique_id: 0,
+   random_unique_UUIDFromGiven: function (arr, count) {
+      if (this.unique_id === arr.length) {
+         log.error(`Array Out of Bound; Max Allowed ${this.unique_id} items`);
+         // as we cant generate more unique id;
+         process.exit();
+      }
+      let uuid = arr[this.unique_id++];
+      return uuid;
+   }
+};
+```
+
 > generate Array of Object Id:
 
 ```js
