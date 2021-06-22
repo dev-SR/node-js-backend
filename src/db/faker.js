@@ -16,24 +16,23 @@ const __dirname = path.join(rootDir, 'seeds');
 let counter1 = 0;
 let counter2 = 0;
 
+function getRandom(N) {
+   let r = Math.floor(Math.random() * N) + 1;
+   return r;
+}
+
 function GenerateData(fileName = 'data.json', N = 10) {
-   let data = [];
-   let i;
    //Customs Helpers
    let _ = {
       unique_id: 0,
-      randomUUIDFromGiven: function (arr) {
-         let uid = faker.random.arrayElement(arr);
-         return uid;
-      },
-      random_unique_UUIDFromGiven: function (arr, count) {
+      random_unique_FromGiven: function (arr, count) {
          if (this.unique_id === arr.length) {
             log.error(
                `Array Out of Bound; Max Allowed ${this.unique_id} items`
             );
             process.exit();
          }
-         let uuid = arr[this.unique_id++];
+         let one = arr[this.unique_id++];
          return uuid;
       },
       arrayOfUUID: function () {
@@ -48,36 +47,38 @@ function GenerateData(fileName = 'data.json', N = 10) {
          return ar;
       }
    };
-   for (i = 0; i < N; i++) {
-      let idx = 0;
-      data.push({
-         _id: _.random_unique_UUIDFromGiven([
-            '60c8e2d66b7127536084de9d',
-            '60c8e2d66b7127536084de9e',
-            '60c8e2d66b7127536084de9f',
-            '60c8e2d66b7127536084dea0',
-            '60c8e2d66b7127536084dea1',
-            '60c8e2d66b7127536084dea2',
-            '60c8e2d66b7127536084dea3',
-            '60c8e2d66b7127536084dea4',
-            '60c8e2d66b7127536084dea5',
-            '60c8e2d66b7127536084dea6',
-            '60c8e2d66b7127536084dea7',
-            '60c8e2d66b7127536084dea8',
-            '60c8e2d66b7127536084dea9'
-         ]),
-         title: faker.lorem.sentences(1),
-         user: _.randomUUIDFromGiven([
-            '60c8e5977008b5518069f811',
-            '60c8e5977008b5518069f812',
-            '60c8e5977008b5518069f813',
-            '60c8e5977008b5518069f814',
-            '60c8e5977008b5518069f815'
-         ]),
-         body: faker.lorem.sentences(2),
-         comments: _.arrayOfUUID()
-      });
-   }
+   //Generate Data:
+   let data = [...Array(N)].map(() => ({
+      name: faker.commerce.productName(),
+      price: faker.commerce.price(10, 1000000),
+      description: faker.lorem.sentences(4),
+      rating: faker.datatype.number(5),
+      images: [...Array(getRandom(5))].map(() => ({
+         url: faker.image.food(),
+         public_id: faker.datatype.uuid()
+      })),
+      category: faker.random.arrayElement([
+         'Electronics',
+         'Cameras',
+         'Laptop',
+         'Accessories',
+         'Headphones',
+         'Food',
+         'Books',
+         'Clothes/Shoes',
+         'Beauty/Health',
+         'Sports',
+         'Outdoor',
+         'Home'
+      ]),
+      seller: faker.company.companyName(),
+      stock: faker.datatype.number(5),
+      reviews: [...Array(getRandom(4))].map(() => ({
+         name: faker.name.findName(),
+         rating: faker.datatype.number(5),
+         comment: faker.lorem.sentences()
+      }))
+   }));
 
    // Delete Old File !!not necessary as writeFileSync overwrite old data.
    try {

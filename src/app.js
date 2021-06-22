@@ -6,8 +6,8 @@ import { connectDB } from './db/db.js';
 app.use(express.json());
 
 //import routes
-import testRouter from './routes/test.route.js';
-app.use('/api/v1', testRouter);
+import productRouter from './routes/product.route.js';
+app.use('/api/v1', productRouter);
 
 //Connecting to database
 connectDB();
