@@ -70,13 +70,13 @@ winget install MongoDB.Compass.Full
 
 Importing data:
 
-```
+```bash
 yarn seed -i
 ```
 
 Deleting data:
 
-```
+```bash
 yarn seed -d
 ```
 
@@ -92,13 +92,13 @@ yarn seed -d
 
 **Generating data:**
 
-```
+```bash
 yarn faker [file_name]! [no. of items]!
 ```
 
 EX:
 
-```
+```bash
 yarn faker
 yarn faker user.json
 yarn faker product.json 100
@@ -115,13 +115,9 @@ let arr = [
    '60c8e5977008b5518069f814',
    '60c8e5977008b5518069f815'
 ];
-let _ = {
-   randomUUIDFromGiven: function (arr) {
-      let uid = faker.random.arrayElement(arr);
-      return uid;
-   }
-};
-_.randomUUIDFromGiven(arr);
+
+let uid = faker.random.arrayElement(arr);
+
 ```
 
 > random But Unique Id From Given Ids:
@@ -160,47 +156,38 @@ for (let i = 0; i < N; i++) {
 }
 ```
 
-> random arrayOfObjectId:
+> Ex: Products
 
-```js
-import ObjectID from 'bson-objectid';
-let _ = {
-   arrayOfUUID: function () {
-      let ar = [];
-      let N = Math.floor(Math.random() * 4) + 1;
-      for (let i = 0; i < N; i++) {
-         // let uid = this.randomUUIDFromGiven();
-         // let uid = this.randomUUIDFromGenerated();
-         let uid = ObjectID();
-         ar.push(uid);
-      }
-      return ar;
-   }
-};
-```
-
-> arrayOfPhotos:
-
-```js
-import faker from 'faker';
-let _ = {
-   arrayOfPhotos: function () {
-      let ar = [];
-      // 0 or 1
-      let ZeroOrOne = Math.floor(Math.random() * 2) + 0;
-      // if 1 generate multiple image
-      if (ZeroOrOne === 1) {
-         let N = Math.floor(Math.random() * 5) + 1;
-         for (let i = 0; i < N; i++) {
-            let img = faker.image.image();
-            ar.push(img);
-         }
-         return ar;
-      } else {
-         //if 0  use default image
-         ar.push('no-photos.png');
-         return ar;
-      }
-   }
-};
+```javascript
+let data = [...Array(N)].map(() => ({
+      name: faker.commerce.productName(),
+      price: faker.commerce.price(10, 1000000),
+      description: faker.lorem.sentences(4),
+      rating: faker.datatype.number(5),
+      images: [...Array(getRandom(5))].map(() => ({
+         url: faker.image.food(),
+         public_id: faker.datatype.uuid()
+      })),
+      category: faker.random.arrayElement([
+         'Electronics',
+         'Cameras',
+         'Laptop',
+         'Accessories',
+         'Headphones',
+         'Food',
+         'Books',
+         'Clothes/Shoes',
+         'Beauty/Health',
+         'Sports',
+         'Outdoor',
+         'Home'
+      ]),
+      seller: faker.company.companyName(),
+      stock: faker.datatype.number(5),
+      reviews: [...Array(getRandom(4))].map(() => ({
+         name: faker.name.findName(),
+         rating: faker.datatype.number(5),
+         comment: faker.lorem.sentences()
+      }))
+   }));
 ```

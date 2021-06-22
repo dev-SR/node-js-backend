@@ -7,15 +7,6 @@ import path from 'path';
 const rootDir = path.resolve(path.dirname(''));
 const __dirname = path.join(rootDir, 'seeds');
 
-// Generate Object id
-// let GeneratedObjectIDs = [];
-// for (let i = 0; i < 5; i++) {
-//    let id = ObjectID();
-//    ObjectIDs.push(id);
-// }
-let counter1 = 0;
-let counter2 = 0;
-
 function getRandom(N) {
    let r = Math.floor(Math.random() * N) + 1;
    return r;
