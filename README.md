@@ -1,4 +1,4 @@
-# 1. Overview
+# Overview
 
 - initialization
 - dependencies
@@ -9,16 +9,17 @@
   - [faker.js](#faker)
   - [seeding](#seed)
 - [Error Handler](#error-handling-in-expressjs)
-  - [Middleware](#middleware)
-  - [Catching Async Errors]()
-
-## 1.1. Initialization
+  - [Error Handling Middleware](#error-handling-middleware)
+  - [Catching Async Errors](#catching-async-errors)
+  - [Handle Unhandled Promise Rejection](#handle-unhandled-promise-rejection)
+  - [Handling Uncaught Exceptions](#handling-uncaught-exceptions)
+## Initialization
 
 ```bash
 npm/yarn init -y
 ```
 
-## 1.2. Dependencies
+## Dependencies
 
 ```bash
 yarn add express dotenv mongoose pino pino-pretty dayjs
@@ -30,7 +31,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 ```
 
-## 1.3. Configure package.json
+## Configure package.json
 
 ```json
 {
@@ -44,7 +45,7 @@ dotenv.config();
 }
 ```
 
-## 1.4. Postman configuration
+## Postman configuration
 
 > Postman Installation:
 
@@ -57,11 +58,11 @@ winget install Postman.Postman
 ![postman-1](./img/postman1.jpg) ![postman-2](./img/postman2.jpg)
 
 
-# 2. Mongodb
+# Mongodb
 
-## 2.1. Mongodb Installations using `winget`
+## Mongodb Installations using `winget`
 
-### 2.1.1. Installations
+### Installations
 
 ```cmd
 winget install MongoDB.Server
@@ -72,7 +73,7 @@ winget install MongoDB.Compass.Full
 
 <div id="seed"/>
 
-## 2.2. Seeding Data
+## Seeding Data
 
 Importing data:
 
@@ -88,7 +89,7 @@ yarn seed -d
 
 <div id="faker" ></div>
 
-## 2.3. Faker.js
+## Faker.js
 
 [Github](https://github.com/marak/Faker.js/)\
 [UnOfficial Doc](https://fakerjsdocs.netlify.app/)\
@@ -200,9 +201,9 @@ let data = [...Array(N)].map(() => ({
 
 .
 
-# 3. Error Handling In Express.js
+# Error Handling In Express.js
 
-## 3.1. Middleware
+## Error Handling Middleware
 
 
 ```javascript
@@ -267,7 +268,7 @@ app.use('/api/v1', productRouter);
 app.use(errorHandlerMiddleware);
 ```
 
-## 3.2. Catching Async Errors
+## Catching Async Errors
 
 **What Happens if any Validation fails ??**
 
@@ -308,7 +309,7 @@ const newProduct = async (req, res) => {
 
 **Using Try Catch for every Controller is Cumbersome**
 
-### 3.2.1. Avoiding try catch:
+### Avoiding try catch:
 
 `middlewares/catchAsyncError.js`
 
@@ -380,3 +381,60 @@ const deleteProduct = catchAsyncError(async (req, res) => {
 
 
 ```
+
+## Handle Unhandled Promise Rejection
+
+For example, invalid mongoose connection string throws: _`(node:13652) UnhandledPromiseRejectionWarning: MongoParseError: Invalid connection string`_
+
+Handling this types of error:
+
+`app.js`
+
+
+```javascript
+// Handle Unhandled Promise Rejection e.g  MongoParseError: Invalid connection string
+const server = app.listen(port, () => {
+   log.info(
+      `Server listening at http://localhost:${port} in ${environment} mode`
+   );
+});
+
+process.on('unhandledRejection', (e) => {
+   log.error(e.message);
+   log.warn('Shutting down the server due to Unhandled Promise rejection');
+   server.close(() => {
+      process.exit(1);
+   });
+});
+```
+
+We can also handle Mongoose errors explicitly:
+
+`db.js`
+
+
+```javascript
+export const connectDB = () => {
+   mongoose
+      .connect(db_uri, {
+         useNewUrlParser: true,
+         useUnifiedTopology: true,
+         useCreateIndex: true,
+         useFindAndModify: false
+      })
+      .then((con) => {
+         log.info(`DB connected with HOST: ${con.connection.host}`);
+      })
+      .catch((error) => {
+         log.error(error.message);
+         process.exit(1);
+      });
+};
+```
+
+**Though using `unhandledRejection` is helpful to deal with other kind of exceptions**
+
+## Handling Uncaught Exceptions
+
+For example: undefined variable,functions etc
+

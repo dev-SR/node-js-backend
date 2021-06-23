@@ -16,8 +16,17 @@ app.use(errorHandlerMiddleware);
 //Connecting to database
 connectDB();
 
-app.listen(port, () => {
+// Handle Unhandled Promise Rejection e.g  MongoParseError: Invalid connection string
+const server = app.listen(port, () => {
    log.info(
       `Server listening at http://localhost:${port} in ${environment} mode`
    );
+});
+
+process.on('unhandledRejection', (e) => {
+   log.error(e.message);
+   log.warn('Shutting down the server due to Unhandled Promise rejection');
+   server.close(() => {
+      process.exit(1);
+   });
 });
