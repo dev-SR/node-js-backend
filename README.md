@@ -13,6 +13,8 @@
   - [Catching Async Errors](#catching-async-errors)
   - [Handle Unhandled Promise Rejection](#handle-unhandled-promise-rejection)
   - [Handling Uncaught Exceptions](#handling-uncaught-exceptions)
+  - [Mongoose validation and ID Error in Production mode](#mongoose-validation-and-id-error-in-production-mode)
+  
 ## Initialization
 
 ```bash
@@ -210,7 +212,7 @@ let data = [...Array(N)].map(() => ({
 const getSingleProduct = async (req, res, next) => {
    const product = await Product.findById(req.params.id);
    // Pass to Error Middleware....
-   if (!product) return next(new ErrorHandler('Product Not Found'));
+   if (!product) return next(new ErrorHandler('Product Not Found',404));
 
    //...
 };
@@ -355,13 +357,13 @@ const getAllProduct = catchAsyncError(async (req, res) => {
 });
 const getSingleProduct = catchAsyncError(async (req, res, next) => {
    const product = await Product.findById(req.params.id);
-   if (!product) return next(new ErrorHandler('Product Not Found'));
+   if (!product) return next(new ErrorHandler('Product Not Found',404));
    //...
 });
 
 const updateProduct = catchAsyncError(async (req, res) => {
    let product = await Product.findById(req.params.id);
-   if (!product) return next(new ErrorHandler('Product Not Found'));
+   if (!product) return next(new ErrorHandler('Product Not Found',404));
 
    product = await Product.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -373,7 +375,7 @@ const updateProduct = catchAsyncError(async (req, res) => {
 
 const deleteProduct = catchAsyncError(async (req, res) => {
    const product = await Product.findById(req.params.id);
-   if (!product) return next(new ErrorHandler('Product Not Found'));
+   if (!product) return next(new ErrorHandler('Product Not Found',404));
 
    await product.remove();
    ///...
@@ -451,3 +453,12 @@ process.on('uncaughtException', (e) => {
 ```
 
 ![Uncaught solved](img/uncaught_ans.jpg)
+
+
+## Mongoose validation and ID Error in Production mode
+
+
+```javascript
+
+```
+
