@@ -458,7 +458,39 @@ process.on('uncaughtException', (e) => {
 ## Mongoose validation and ID Error in Production mode
 
 
-```javascript
+![cast error](img/casterror.jpg)
 
+..
+
+![validation errr](img/validationerror.jpg)
+
+`middlewares/error.js`
+```javascript
+//......
+   if (environment == 'PRODUCTION') {
+      let error = { ...err };
+      error.message = err.message;
+      //Wrong Mongoose Object ID error
+      if (err.name === 'CastError') {
+         const message = `Resource not found. Invalid: ${err.path}`;
+         error = new ErrorHandler(message, 400);
+      }
+
+      // Mongoose Validation Error
+      if (err.name === 'ValidationError') {
+         const message = Object.values(err.errors).map(
+            (value) => value.message
+         );
+         error = new ErrorHandler(message, 400);
+      }
+
+      res.status(error.statusCode).json({
+         success: false,
+         message: error.message || 'Internal Server Error'
+      });
+   }
 ```
 
+![cast error solve](img/casterror_solve.jpg)
+..
+![validation error solve](img/validationerror_solve.jpg)
