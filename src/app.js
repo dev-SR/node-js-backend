@@ -13,6 +13,13 @@ app.use('/api/v1', productRouter);
 // Error Middleware
 app.use(errorHandlerMiddleware);
 
+// Handling Uncaught Exceptions
+process.on('uncaughtException', (e) => {
+   log.error(e.message);
+   log.warn('Shutting down due to uncaught exception');
+   process.exit(1);
+});
+
 //Connecting to database
 connectDB();
 

@@ -438,3 +438,16 @@ export const connectDB = () => {
 
 For example: undefined variable,functions etc
 
+![Uncaught](img/uncaughtjpg.jpg)
+
+
+```javascript
+// Handling Uncaught Exceptions
+process.on('uncaughtException', (e) => {
+   log.error(e.message);
+   log.warn('Shutting down due to uncaught exception');
+   process.exit(1);
+});
+```
+
+![Uncaught solved](img/uncaught_ans.jpg)
