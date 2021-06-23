@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { db_uri } from '../config.js';
-import log from '../core/logger.js';
+import log from '../utils/logger.js';
 export const connectDB = () => {
    mongoose
       .connect(db_uri, {

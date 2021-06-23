@@ -1,21 +1,24 @@
-# Overview
+# 1. Overview
 
--  initialization
--  dependencies
--  package.json
--  postman
--  db
-   -  mongodb
-   -  [faker.js](#faker)
-   -  [seeding](#seed)
+- initialization
+- dependencies
+- package.json
+- postman
+- db
+  - [mongodb](#mongodb)
+  - [faker.js](#faker)
+  - [seeding](#seed)
+- [Error Handler](#error-handling-in-expressjs)
+  - [Middleware](#middleware)
+  - [Catching Async Errors]()
 
-## Initialization:
+## 1.1. Initialization
 
 ```bash
 npm/yarn init -y
 ```
 
-## Dependencies:
+## 1.2. Dependencies
 
 ```bash
 yarn add express dotenv mongoose pino pino-pretty dayjs
@@ -27,7 +30,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 ```
 
-## Configure package.json:
+## 1.3. Configure package.json
 
 ```json
 {
@@ -41,7 +44,7 @@ dotenv.config();
 }
 ```
 
-## Postman configuration:
+## 1.4. Postman configuration
 
 > Postman Installation:
 
@@ -53,9 +56,12 @@ winget install Postman.Postman
 
 ![postman-1](./img/postman1.jpg) ![postman-2](./img/postman2.jpg)
 
-## Mongodb Installations using `winget`:
 
-### Installations:
+# 2. Mongodb
+
+## 2.1. Mongodb Installations using `winget`
+
+### 2.1.1. Installations
 
 ```cmd
 winget install MongoDB.Server
@@ -66,7 +72,7 @@ winget install MongoDB.Compass.Full
 
 <div id="seed"/>
 
-## Seeding Data:
+## 2.2. Seeding Data
 
 Importing data:
 
@@ -82,7 +88,7 @@ yarn seed -d
 
 <div id="faker" ></div>
 
-## Faker.js
+## 2.3. Faker.js
 
 [Github](https://github.com/marak/Faker.js/)\
 [UnOfficial Doc](https://fakerjsdocs.netlify.app/)\
@@ -190,4 +196,187 @@ let data = [...Array(N)].map(() => ({
          comment: faker.lorem.sentences()
       }))
    }));
+```
+
+.
+
+# 3. Error Handling In Express.js
+
+## 3.1. Middleware
+
+
+```javascript
+const getSingleProduct = async (req, res, next) => {
+   const product = await Product.findById(req.params.id);
+   // Pass to Error Middleware....
+   if (!product) return next(new ErrorHandler('Product Not Found'));
+
+   //...
+};
+```
+
+`utils/errorHandler.js`
+
+```javascript
+// Custom Error Handler Class
+class ErrorHandler extends Error {
+   constructor(message, statusCode) {
+      super(message);
+      this.statusCode = statusCode;
+      Error.captureStackTrace(this, this.constructor);
+   }
+}
+export default ErrorHandler;
+```
+
+`middleware/error.js`
+
+```javascript
+import { environment } from '../config.js';
+export default function errors(err, req, res, next) {
+   err.statusCode = err.statusCode || 500;
+   if (environment === 'DEVELOPMENT') {
+      res.status(err.statusCode).json({
+         success: false,
+         error: err,
+         message: err.message,
+         stack: err.stack
+      });
+   }
+
+   if (environment === 'PRODUCTION') {
+      let error = { ...err };
+      error.message = err.message;
+      res.status(error.statusCode).json({
+         success: false,
+         message: error.message || 'Internal Server Error'
+      });
+   }
+}
+```
+
+`app.js`
+
+```javascript
+import errorHandlerMiddleware from './middlewares/errors.js';
+//...
+
+app.use('/api/v1', productRouter);
+
+// Error Middleware
+app.use(errorHandlerMiddleware);
+```
+
+## 3.2. Catching Async Errors
+
+**What Happens if any Validation fails ??**
+
+e.g. not providing any `required` felids in POST request
+
+Without Try Catch Blocks:
+
+```javascript
+const newProduct = async (req, res) => {
+   const product = await Product.create(req.body);
+   res.json({
+      success: true,
+      data: product
+   });
+};
+```
+![trycatchError](img/asycError.jpg)
+
+_(node:17644) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch()._
+
+With Try Catch Blocks:
+
+```javascript
+const newProduct = async (req, res) => {
+   try {
+      const product = await Product.create(req.body);
+      res.json({
+         success: true,
+         data: product
+      });
+   } catch (e) {
+      res.json(e);
+   }
+};
+```
+
+![trycatchError 2](img/asycError_2.jpg)
+
+**Using Try Catch for every Controller is Cumbersome**
+
+### 3.2.1. Avoiding try catch:
+
+`middlewares/catchAsyncError.js`
+
+```javascript
+export default function catchAsyncErrors(fun) {
+   // takes a async function
+   return async (req, res, next) => {
+      try {
+         await fun(req, res, next); //call that function
+      } catch (e) {
+         next(e); //pass error to middleware
+      }
+   };
+   //Or, using resolve
+   //    return (req, res, next) => {
+   //       Promise.resolve(fun(req, res, next)).catch(next);
+   //    };
+}
+```
+
+Other packages that can be used: [express-async-handler](https://www.npmjs.com/package/express-async-handler)
+
+**Now in Controllers, we don't need to use Try Catch Every time:**
+
+```javascript
+import catchAsyncError from '../middlewares/catchAsyncErrors.js';
+
+const newProduct = catchAsyncError(async (req, res) => {
+   const product = await Product.create(req.body);
+   res.json({
+      success: true,
+      data: product
+   });
+});
+
+const getAllProduct = catchAsyncError(async (req, res) => {
+   const products = await Product.find();
+   res.json({
+      success: true,
+      count: products.length,
+      data: products
+   });
+});
+const getSingleProduct = catchAsyncError(async (req, res, next) => {
+   const product = await Product.findById(req.params.id);
+   if (!product) return next(new ErrorHandler('Product Not Found'));
+   //...
+});
+
+const updateProduct = catchAsyncError(async (req, res) => {
+   let product = await Product.findById(req.params.id);
+   if (!product) return next(new ErrorHandler('Product Not Found'));
+
+   product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false
+   });
+   //...
+});
+
+const deleteProduct = catchAsyncError(async (req, res) => {
+   const product = await Product.findById(req.params.id);
+   if (!product) return next(new ErrorHandler('Product Not Found'));
+
+   await product.remove();
+   ///...
+});
+
+
 ```
