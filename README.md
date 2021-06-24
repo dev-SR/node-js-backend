@@ -259,6 +259,55 @@ const getAllProduct = catchAsyncError(async (req, res) => {
 
 ### Filter
 
+`utils/QueryHelper.js`
+
+```javascript
+class QueryHelper {
+ constructor(query, queryStr) {
+  this.query = query;
+  this.queryStr = queryStr;
+ }
+ search() {
+  //....
+  return this;
+ }
+ filter() {
+  const queryCopy = { ...this.queryStr };
+  //Remove fields from the query
+  const removeFields = ['keyword', 'limit', 'page'];
+  removeFields.forEach((el) => delete queryCopy[el]);
+
+  //Advance Filter for Price rating....etc
+
+  let qStr = JSON.stringify(queryCopy);
+  qStr = qStr.replace(/\b(gt|gte|lt|lte)\b/g, (with$) => `$${with$}`);
+  console.log(qStr);
+  this.query = this.query.find(JSON.parse(qStr));
+  return this;
+ }
+}
+export default QueryHelper;
+```
+
+`product.controller.js`
+
+```javascript
+const getAllProduct = catchAsyncError(async (req, res) => {
+ let queryBuilder = Product.find();
+
+ const QHInstance = new QueryHelper(queryBuilder, req.query)
+  .search()
+  .filter();
+ const products = await QHInstance.query;
+ res.json({
+  success: true,
+  count: products.length,
+  data: products
+ });
+});
+```
+
+![filter](img/filter.jpg)
 ### Pagination
 
 # Error Handling In Express.js

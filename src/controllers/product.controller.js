@@ -18,7 +18,9 @@ const getAllProduct = catchAsyncError(async (req, res) => {
 	// const QHInstance = new QueryHelper(queryBuilder, req.query);
 	// const QHInstance = QHInstance.search();
 	// const products = await QHInstance;
-	const QHInstance = new QueryHelper(queryBuilder, req.query).search();
+	const QHInstance = new QueryHelper(queryBuilder, req.query)
+		.search()
+		.filter();
 	const products = await QHInstance.query;
 	res.json({
 		success: true,
