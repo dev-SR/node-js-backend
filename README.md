@@ -8,13 +8,17 @@
   - [mongodb](#mongodb)
   - [faker.js](#faker)
   - [seeding](#seed)
+  - [Advance Query](#advance-query)
+    - [Search](#search)
+    - [Filter](#filter)
+    - [Pagination](#pagination)
 - [Error Handler](#error-handling-in-expressjs)
   - [Error Handling Middleware](#error-handling-middleware)
   - [Catching Async Errors](#catching-async-errors)
   - [Handle Unhandled Promise Rejection](#handle-unhandled-promise-rejection)
   - [Handling Uncaught Exceptions](#handling-uncaught-exceptions)
   - [Mongoose validation and ID Error in Production mode](#mongoose-validation-and-id-error-in-production-mode)
-  
+
 ## Initialization
 
 ```bash
@@ -37,13 +41,13 @@ dotenv.config();
 
 ```json
 {
-   "type": "module",
-   "scripts": {
-      "start": "node src/server.js",
-      "dev": "nodemon src/server.js",
-      "seed": "cd src/db && node --experimental-json-modules seeder",
-      "faker": "cd src/db && node faker"
-   }
+ "type": "module",
+ "scripts": {
+  "start": "node src/server.js",
+  "dev": "nodemon src/server.js",
+  "seed": "cd src/db && node --experimental-json-modules seeder",
+  "faker": "cd src/db && node faker"
+ }
 }
 ```
 
@@ -58,7 +62,6 @@ winget install Postman.Postman
 > Environment Setup:
 
 ![postman-1](./img/postman1.jpg) ![postman-2](./img/postman2.jpg)
-
 
 # Mongodb
 
@@ -118,15 +121,14 @@ yarn faker product.json 100
 ```js
 import faker from 'faker';
 let arr = [
-   '60c8e5977008b5518069f811',
-   '60c8e5977008b5518069f812',
-   '60c8e5977008b5518069f813',
-   '60c8e5977008b5518069f814',
-   '60c8e5977008b5518069f815'
+ '60c8e5977008b5518069f811',
+ '60c8e5977008b5518069f812',
+ '60c8e5977008b5518069f813',
+ '60c8e5977008b5518069f814',
+ '60c8e5977008b5518069f815'
 ];
 
 let uid = faker.random.arrayElement(arr);
-
 ```
 
 > random But Unique Id From Given Ids:
@@ -134,23 +136,23 @@ let uid = faker.random.arrayElement(arr);
 ```js
 import faker from 'faker';
 let arr = [
-   '60c8e5977008b5518069f811',
-   '60c8e5977008b5518069f812',
-   '60c8e5977008b5518069f813',
-   '60c8e5977008b5518069f814',
-   '60c8e5977008b5518069f815'
+ '60c8e5977008b5518069f811',
+ '60c8e5977008b5518069f812',
+ '60c8e5977008b5518069f813',
+ '60c8e5977008b5518069f814',
+ '60c8e5977008b5518069f815'
 ];
 let _ = {
-   unique_id: 0,
-   random_unique_UUIDFromGiven: function (arr, count) {
-      if (this.unique_id === arr.length) {
-         log.error(`Array Out of Bound; Max Allowed ${this.unique_id} items`);
-         // as we cant generate more unique id;
-         process.exit();
-      }
-      let uuid = arr[this.unique_id++];
-      return uuid;
-   }
+ unique_id: 0,
+ random_unique_UUIDFromGiven: function (arr, count) {
+  if (this.unique_id === arr.length) {
+   log.error(`Array Out of Bound; Max Allowed ${this.unique_id} items`);
+   // as we cant generate more unique id;
+   process.exit();
+  }
+  let uuid = arr[this.unique_id++];
+  return uuid;
+ }
 };
 ```
 
@@ -160,8 +162,8 @@ let _ = {
 //Generate Object id
 let GeneratedObjectIDs = [];
 for (let i = 0; i < N; i++) {
-   let id = ObjectID();
-   ObjectIDs.push(id);
+ let id = ObjectID();
+ ObjectIDs.push(id);
 }
 ```
 
@@ -169,52 +171,107 @@ for (let i = 0; i < N; i++) {
 
 ```javascript
 let data = [...Array(Number(N))].map(() => ({
-      name: faker.commerce.productName(),
-      price: faker.commerce.price(10, 1000000),
-      description: faker.lorem.sentences(4),
-      rating: faker.datatype.number(5),
-      images: [...Array(getRandom(5))].map(() => ({
-         url: faker.image.food(),
-         public_id: faker.datatype.uuid()
-      })),
-      category: faker.random.arrayElement([
-         'Electronics',
-         'Cameras',
-         'Laptop',
-         'Accessories',
-         'Headphones',
-         'Food',
-         'Books',
-         'Clothes/Shoes',
-         'Beauty/Health',
-         'Sports',
-         'Outdoor',
-         'Home'
-      ]),
-      seller: faker.company.companyName(),
-      stock: faker.datatype.number(5),
-      reviews: [...Array(getRandom(4))].map(() => ({
-         name: faker.name.findName(),
-         rating: faker.datatype.number(5),
-         comment: faker.lorem.sentences()
-      }))
-   }));
+ name: faker.commerce.productName(),
+ price: faker.commerce.price(10, 1000000),
+ description: faker.lorem.sentences(4),
+ rating: faker.datatype.number(5),
+ images: [...Array(getRandom(5))].map(() => ({
+  url: faker.image.food(),
+  public_id: faker.datatype.uuid()
+ })),
+ category: faker.random.arrayElement([
+  'Electronics',
+  'Cameras',
+  'Laptop',
+  'Accessories',
+  'Headphones',
+  'Food',
+  'Books',
+  'Clothes/Shoes',
+  'Beauty/Health',
+  'Sports',
+  'Outdoor',
+  'Home'
+ ]),
+ seller: faker.company.companyName(),
+ stock: faker.datatype.number(5),
+ reviews: [...Array(getRandom(4))].map(() => ({
+  name: faker.name.findName(),
+  rating: faker.datatype.number(5),
+  comment: faker.lorem.sentences()
+ }))
+}));
 ```
 
-.
+## Advance Query
+
+### Search
+
+`utils/QueryHelper.js`
+
+```javascript
+class QueryHelper {
+ constructor(query, queryStr) {
+  this.query = query;
+  this.queryStr = queryStr;
+ }
+ search() {
+  //{{DOMAIN}}/api/v1/products?keyword=Pizza
+  const keyword = this.queryStr.keyword
+   ? {
+     name: {
+      $regex: this.queryStr.keyword,
+      $options: 'i'
+     }
+     }
+   : {};
+  console.log(keyword);
+  this.query = this.query.find({ ...keyword });
+  return this;
+  //return Instance so that  ..new QH().search().filter().paginate()
+  //chaining works }
+}
+
+export default QueryHelper;
+```
+
+`product.controller.js`
+
+```javascript
+const getAllProduct = catchAsyncError(async (req, res) => {
+//if there is no defined callback, a query builder interface is returned 
+//by static helper methods of Mongoose model
+ let queryBuilder = Product.find();
+ // const QHInstance = new QueryHelper(queryBuilder, req.query);
+ // const QHInstance = QHInstance.search();
+ // const products = await QHInstance;
+ const QHInstance = new QueryHelper(queryBuilder, req.query).search();
+ const products = await QHInstance.query;
+ res.json({
+  success: true,
+  count: products.length,
+  data: products
+ });
+});
+```
+
+![Search](img/search.jpg)
+
+### Filter
+
+### Pagination
 
 # Error Handling In Express.js
 
 ## Error Handling Middleware
 
-
 ```javascript
 const getSingleProduct = async (req, res, next) => {
-   const product = await Product.findById(req.params.id);
-   // Pass to Error Middleware....
-   if (!product) return next(new ErrorHandler('Product Not Found',404));
+ const product = await Product.findById(req.params.id);
+ // Pass to Error Middleware....
+ if (!product) return next(new ErrorHandler('Product Not Found', 404));
 
-   //...
+ //...
 };
 ```
 
@@ -223,11 +280,11 @@ const getSingleProduct = async (req, res, next) => {
 ```javascript
 // Custom Error Handler Class
 class ErrorHandler extends Error {
-   constructor(message, statusCode) {
-      super(message);
-      this.statusCode = statusCode;
-      Error.captureStackTrace(this, this.constructor);
-   }
+ constructor(message, statusCode) {
+  super(message);
+  this.statusCode = statusCode;
+  Error.captureStackTrace(this, this.constructor);
+ }
 }
 export default ErrorHandler;
 ```
@@ -237,24 +294,24 @@ export default ErrorHandler;
 ```javascript
 import { environment } from '../config.js';
 export default function errors(err, req, res, next) {
-   err.statusCode = err.statusCode || 500;
-   if (environment === 'DEVELOPMENT') {
-      res.status(err.statusCode).json({
-         success: false,
-         error: err,
-         message: err.message,
-         stack: err.stack
-      });
-   }
+ err.statusCode = err.statusCode || 500;
+ if (environment === 'DEVELOPMENT') {
+  res.status(err.statusCode).json({
+   success: false,
+   error: err,
+   message: err.message,
+   stack: err.stack
+  });
+ }
 
-   if (environment === 'PRODUCTION') {
-      let error = { ...err };
-      error.message = err.message;
-      res.status(error.statusCode).json({
-         success: false,
-         message: error.message || 'Internal Server Error'
-      });
-   }
+ if (environment === 'PRODUCTION') {
+  let error = { ...err };
+  error.message = err.message;
+  res.status(error.statusCode).json({
+   success: false,
+   message: error.message || 'Internal Server Error'
+  });
+ }
 }
 ```
 
@@ -280,30 +337,33 @@ Without Try Catch Blocks:
 
 ```javascript
 const newProduct = async (req, res) => {
-   const product = await Product.create(req.body);
-   res.json({
-      success: true,
-      data: product
-   });
+ const product = await Product.create(req.body);
+ res.json({
+  success: true,
+  data: product
+ });
 };
 ```
+
 ![trycatchError](img/asycError.jpg)
 
-_(node:17644) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch()._
+_(node:17644) UnhandledPromiseRejectionWarning: Unhandled promise rejection.
+This error originated either by throwing inside of an async function without a
+catch block, or by rejecting a promise which was not handled with .catch()._
 
 With Try Catch Blocks:
 
 ```javascript
 const newProduct = async (req, res) => {
-   try {
-      const product = await Product.create(req.body);
-      res.json({
-         success: true,
-         data: product
-      });
-   } catch (e) {
-      res.json(e);
-   }
+ try {
+  const product = await Product.create(req.body);
+  res.json({
+   success: true,
+   data: product
+  });
+ } catch (e) {
+  res.json(e);
+ }
 };
 ```
 
@@ -311,28 +371,29 @@ const newProduct = async (req, res) => {
 
 **Using Try Catch for every Controller is Cumbersome**
 
-### Avoiding try catch:
+### Avoiding try catch
 
 `middlewares/catchAsyncError.js`
 
 ```javascript
 export default function catchAsyncErrors(fun) {
-   // takes a async function
-   return async (req, res, next) => {
-      try {
-         await fun(req, res, next); //call that function
-      } catch (e) {
-         next(e); //pass error to middleware
-      }
-   };
-   //Or, using resolve
-   //    return (req, res, next) => {
-   //       Promise.resolve(fun(req, res, next)).catch(next);
-   //    };
+ // takes a async function
+ return async (req, res, next) => {
+  try {
+   await fun(req, res, next); //call that function
+  } catch (e) {
+   next(e); //pass error to middleware
+  }
+ };
+ //Or, using resolve
+ //    return (req, res, next) => {
+ //       Promise.resolve(fun(req, res, next)).catch(next);
+ //    };
 }
 ```
 
-Other packages that can be used: [express-async-handler](https://www.npmjs.com/package/express-async-handler)
+Other packages that can be used:
+[express-async-handler](https://www.npmjs.com/package/express-async-handler)
 
 **Now in Controllers, we don't need to use Try Catch Every time:**
 
@@ -340,73 +401,71 @@ Other packages that can be used: [express-async-handler](https://www.npmjs.com/p
 import catchAsyncError from '../middlewares/catchAsyncErrors.js';
 
 const newProduct = catchAsyncError(async (req, res) => {
-   const product = await Product.create(req.body);
-   res.json({
-      success: true,
-      data: product
-   });
+ const product = await Product.create(req.body);
+ res.json({
+  success: true,
+  data: product
+ });
 });
 
 const getAllProduct = catchAsyncError(async (req, res) => {
-   const products = await Product.find();
-   res.json({
-      success: true,
-      count: products.length,
-      data: products
-   });
+ const products = await Product.find();
+ res.json({
+  success: true,
+  count: products.length,
+  data: products
+ });
 });
 const getSingleProduct = catchAsyncError(async (req, res, next) => {
-   const product = await Product.findById(req.params.id);
-   if (!product) return next(new ErrorHandler('Product Not Found',404));
-   //...
+ const product = await Product.findById(req.params.id);
+ if (!product) return next(new ErrorHandler('Product Not Found', 404));
+ //...
 });
 
 const updateProduct = catchAsyncError(async (req, res) => {
-   let product = await Product.findById(req.params.id);
-   if (!product) return next(new ErrorHandler('Product Not Found',404));
+ let product = await Product.findById(req.params.id);
+ if (!product) return next(new ErrorHandler('Product Not Found', 404));
 
-   product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-      useFindAndModify: false
-   });
-   //...
+ product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+  new: true,
+  runValidators: true,
+  useFindAndModify: false
+ });
+ //...
 });
 
 const deleteProduct = catchAsyncError(async (req, res) => {
-   const product = await Product.findById(req.params.id);
-   if (!product) return next(new ErrorHandler('Product Not Found',404));
+ const product = await Product.findById(req.params.id);
+ if (!product) return next(new ErrorHandler('Product Not Found', 404));
 
-   await product.remove();
-   ///...
+ await product.remove();
+ ///...
 });
-
-
 ```
 
 ## Handle Unhandled Promise Rejection
 
-For example, invalid mongoose connection string throws: _`(node:13652) UnhandledPromiseRejectionWarning: MongoParseError: Invalid connection string`_
+For example, invalid mongoose connection string throws:
+_`(node:13652) UnhandledPromiseRejectionWarning: MongoParseError: Invalid connection string`_
 
 Handling this types of error:
 
 `app.js`
 
-
 ```javascript
 // Handle Unhandled Promise Rejection e.g  MongoParseError: Invalid connection string
 const server = app.listen(port, () => {
-   log.info(
-      `Server listening at http://localhost:${port} in ${environment} mode`
-   );
+ log.info(
+  `Server listening at http://localhost:${port} in ${environment} mode`
+ );
 });
 
 process.on('unhandledRejection', (e) => {
-   log.error(e.message);
-   log.warn('Shutting down the server due to Unhandled Promise rejection');
-   server.close(() => {
-      process.exit(1);
-   });
+ log.error(e.message);
+ log.warn('Shutting down the server due to Unhandled Promise rejection');
+ server.close(() => {
+  process.exit(1);
+ });
 });
 ```
 
@@ -414,27 +473,27 @@ We can also handle Mongoose errors explicitly:
 
 `db.js`
 
-
 ```javascript
 export const connectDB = () => {
-   mongoose
-      .connect(db_uri, {
-         useNewUrlParser: true,
-         useUnifiedTopology: true,
-         useCreateIndex: true,
-         useFindAndModify: false
-      })
-      .then((con) => {
-         log.info(`DB connected with HOST: ${con.connection.host}`);
-      })
-      .catch((error) => {
-         log.error(error.message);
-         process.exit(1);
-      });
+ mongoose
+  .connect(db_uri, {
+   useNewUrlParser: true,
+   useUnifiedTopology: true,
+   useCreateIndex: true,
+   useFindAndModify: false
+  })
+  .then((con) => {
+   log.info(`DB connected with HOST: ${con.connection.host}`);
+  })
+  .catch((error) => {
+   log.error(error.message);
+   process.exit(1);
+  });
 };
 ```
 
-**Though using `unhandledRejection` is helpful to deal with other kind of exceptions**
+**Though using `unhandledRejection` is helpful to deal with other kind of
+exceptions**
 
 ## Handling Uncaught Exceptions
 
@@ -442,21 +501,18 @@ For example: undefined variable,functions etc
 
 ![Uncaught](img/uncaughtjpg.jpg)
 
-
 ```javascript
 // Handling Uncaught Exceptions
 process.on('uncaughtException', (e) => {
-   log.error(e.message);
-   log.warn('Shutting down due to uncaught exception');
-   process.exit(1);
+ log.error(e.message);
+ log.warn('Shutting down due to uncaught exception');
+ process.exit(1);
 });
 ```
 
 ![Uncaught solved](img/uncaught_ans.jpg)
 
-
 ## Mongoose validation and ID Error in Production mode
-
 
 ![cast error](img/casterror.jpg)
 
@@ -465,32 +521,30 @@ process.on('uncaughtException', (e) => {
 ![validation errr](img/validationerror.jpg)
 
 `middlewares/error.js`
+
 ```javascript
 //......
-   if (environment == 'PRODUCTION') {
-      let error = { ...err };
-      error.message = err.message;
-      //Wrong Mongoose Object ID error
-      if (err.name === 'CastError') {
-         const message = `Resource not found. Invalid: ${err.path}`;
-         error = new ErrorHandler(message, 400);
-      }
+if (environment == 'PRODUCTION') {
+ let error = { ...err };
+ error.message = err.message;
+ //Wrong Mongoose Object ID error
+ if (err.name === 'CastError') {
+  const message = `Resource not found. Invalid: ${err.path}`;
+  error = new ErrorHandler(message, 400);
+ }
 
-      // Mongoose Validation Error
-      if (err.name === 'ValidationError') {
-         const message = Object.values(err.errors).map(
-            (value) => value.message
-         );
-         error = new ErrorHandler(message, 400);
-      }
+ // Mongoose Validation Error
+ if (err.name === 'ValidationError') {
+  const message = Object.values(err.errors).map((value) => value.message);
+  error = new ErrorHandler(message, 400);
+ }
 
-      res.status(error.statusCode).json({
-         success: false,
-         message: error.message || 'Internal Server Error'
-      });
-   }
+ res.status(error.statusCode).json({
+  success: false,
+  message: error.message || 'Internal Server Error'
+ });
+}
 ```
 
-![cast error solve](img/casterror_solve.jpg)
-..
+![cast error solve](img/casterror_solve.jpg) ..
 ![validation error solve](img/validationerror_solve.jpg)
