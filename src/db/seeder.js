@@ -59,7 +59,7 @@ const importData = async () => {
 const deleteData = async () => {
    try {
       await Model.deleteMany();
-      log.error('✖ Data Deleted');
+      log.warn('✖ Data Deleted');
       process.exit();
    } catch (e) {
       log.error(e);
