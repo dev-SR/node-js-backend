@@ -168,7 +168,7 @@ for (let i = 0; i < N; i++) {
 > Ex: Products
 
 ```javascript
-let data = [...Array(N)].map(() => ({
+let data = [...Array(Number(N))].map(() => ({
       name: faker.commerce.productName(),
       price: faker.commerce.price(10, 1000000),
       description: faker.lorem.sentences(4),
