@@ -1,4 +1,4 @@
-import log from '../core/logger.js';
+import log from '../utils/logger.js';
 import fs from 'fs';
 import faker from 'faker';
 import ObjectID from 'bson-objectid';

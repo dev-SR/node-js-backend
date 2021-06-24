@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import log from '../core/logger.js';
+import log from '../utils/logger.js';
 
 import path from 'path';
 const __dirname = path.resolve(path.dirname(''));
