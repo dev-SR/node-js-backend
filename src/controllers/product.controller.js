@@ -12,6 +12,7 @@ const newProduct = catchAsyncError(async (req, res) => {
 });
 
 const getAllProduct = catchAsyncError(async (req, res) => {
+	const totalProduct = await Product.countDocuments();
 	//if there is no defined callback, a query builder interface is returned
 	//by static helper methods of Mongoose model
 	let queryBuilder = Product.find();
@@ -20,12 +21,14 @@ const getAllProduct = catchAsyncError(async (req, res) => {
 	// const products = await QHInstance;
 	const QHInstance = new QueryHelper(queryBuilder, req.query)
 		.search()
-		.filter();
+		.filter()
+		.paginate(5);
 	const products = await QHInstance.query;
 	res.json({
 		success: true,
 		count: products.length,
-		data: products
+		totalProduct,
+		products
 	});
 });
 const getSingleProduct = catchAsyncError(async (req, res, next) => {

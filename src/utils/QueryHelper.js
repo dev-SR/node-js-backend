@@ -34,6 +34,15 @@ class QueryHelper {
 		this.query = this.query.find(JSON.parse(qStr));
 		return this;
 	}
+
+	paginate(perPage) {
+		const currentPage = Number(this.queryStr.page) || 1;
+		const skip = perPage * (currentPage - 1);
+		// page=1 , skip=5*0=0
+		// page=2 , skip=5*1=5
+		this.query = this.query.limit(perPage).skip(skip);
+		return this;
+	}
 }
 
 export default QueryHelper;

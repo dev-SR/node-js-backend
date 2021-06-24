@@ -44,7 +44,7 @@ dotenv.config();
  "type": "module",
  "scripts": {
   "start": "node src/server.js",
-  "dev": "nodemon src/server.js",
+  "dev": "nodemon -w .env -w src src/app.js",
   "seed": "cd src/db && node --experimental-json-modules seeder",
   "faker": "cd src/db && node faker"
  }
@@ -308,7 +308,45 @@ const getAllProduct = catchAsyncError(async (req, res) => {
 ```
 
 ![filter](img/filter.jpg)
+
 ### Pagination
+
+`utils/QueryHelper.js`
+
+```javascript
+//...
+paginate(perPage) {
+  const currentPage = Number(this.queryStr.page) || 1;
+  const skip = perPage * (currentPage - 1);
+  // page=1 , skip=5*0=0
+  // page=2 , skip=5*1=5
+  this.query = this.query.limit(perPage).skip(skip);
+  return this;
+ }
+   //...
+```
+
+`product.controller.js`
+
+```javascript
+const getAllProduct = catchAsyncError(async (req, res) => {
+ const totalProduct = await Product.countDocuments();
+ let queryBuilder = Product.find();
+ const QHInstance = new QueryHelper(queryBuilder, req.query)
+  .search()
+  .filter()
+  .paginate(5);
+ const products = await QHInstance.query;
+ res.json({
+  success: true,
+  count: products.length,
+  totalProduct,
+  products
+ });
+});
+```
+
+![Pagiante](img/paginate.jpg))
 
 # Error Handling In Express.js
 
