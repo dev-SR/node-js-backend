@@ -8,7 +8,7 @@ const rootDir = path.resolve(path.dirname(''));
 const __dirname = path.join(rootDir, 'seeds');
 
 function getRandom(N) {
-   let r = Math.floor(Math.random() * N) + 1;
+   let r = Math.floor(Math.random() * Number(N)) + 1;
    return r;
 }
 
@@ -39,9 +39,9 @@ function GenerateData(fileName = 'data.json', N = 10) {
       }
    };
    //Generate Data:
-   let data = [...Array(N)].map(() => ({
+   let data = [...Array(Number(N))].map(() => ({
       name: faker.commerce.productName(),
-      price: faker.commerce.price(10, 1000000),
+      price: faker.commerce.price(10, 10000),
       description: faker.lorem.sentences(4),
       rating: faker.datatype.number(5),
       images: [...Array(getRandom(5))].map(() => ({
