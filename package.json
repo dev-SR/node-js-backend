@@ -1,29 +1,30 @@
 {
-   "name": "nodeserver-js",
-   "version": "1.0.0",
-   "description": "",
-   "main": "index.js",
-   "type": "module",
-   "scripts": {
-      "start": "node src/app.js",
-      "dev": "nodemon -w .env -w src src/app.js",
-      "seed": "cd src/db && node --experimental-json-modules seeder",
-      "faker": "cd src/db && node faker"
-   },
-   "keywords": [],
-   "author": "",
-   "license": "ISC",
-   "dependencies": {
-      "dayjs": "^1.10.5",
-      "dotenv": "^10.0.0",
-      "express": "^4.17.1",
-      "faker": "^5.5.3",
-      "mongoose": "^5.12.13",
-      "pino": "^6.11.3",
-      "pino-pretty": "^5.0.2"
-   },
-   "devDependencies": {
-      "bson-objectid": "^2.0.1",
-      "nodemon": "^2.0.7"
-   }
+	"name": "nodeserver-js",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"start": "node src/app.js",
+		"dev": "nodemon -w .env -w src src/app.js",
+		"prod": "cross-env NODE_ENV=PRODUCTION nodemon -w .env -w src src/app.js",
+		"seed": "cd src/db && node --experimental-json-modules seeder",
+		"faker": "cd src/db && node faker"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"dayjs": "^1.10.5",
+		"dotenv": "^10.0.0",
+		"express": "^4.17.1",
+		"faker": "^5.5.3",
+		"mongoose": "^5.12.13",
+		"pino": "^6.11.3",
+		"pino-pretty": "^5.0.2"
+	},
+	"devDependencies": {
+		"bson-objectid": "^2.0.1",
+		"nodemon": "^2.0.7"
+	}
 }
